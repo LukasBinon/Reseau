@@ -28,4 +28,4 @@ Test.creer_bouton_quitter(main_frame, app)
 
 # Lancement
 app.mainloop()
-#Nicola
+#Jiahao
