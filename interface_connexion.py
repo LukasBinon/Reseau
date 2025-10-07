@@ -9,7 +9,7 @@ def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
 
     label_bienvenue = ctk.CTkLabel(
         cadre_principal,
-        text="Bienvenue dans votre application réseau préf",
+        text="Bienvenue dans votre application réseau",
         font=("Segoe UI", 26, "bold"),
         text_color="#2D89EF"
     )
