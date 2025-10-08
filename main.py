@@ -1,6 +1,9 @@
 from interface_connexion import creer_application, creer_cadre_principal, afficher_page_connexion
 from interface_inscription import afficher_page_inscription
+from database import init_db
 
+
+init_db()
 
 def main():
 

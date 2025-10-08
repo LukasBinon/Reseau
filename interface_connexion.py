@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from interface_menu import afficher_menu
+from database import verifier_identifiants
 
 
 def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
@@ -98,15 +99,15 @@ def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
     bouton_quitter.pack(pady=10)
 
 
+
+
 def verifier_connexion(utilisateur, mot_de_passe, label_message, app, cadre_principal):
-
-    #test car pas de db
-    if utilisateur == "da" and mot_de_passe == "12":
-        label_message.configure(text="Connexion réussie", text_color="green")
-
+    if verifier_identifiants(utilisateur, mot_de_passe):
+        label_message.configure(text="Connexion réussie ", text_color="green")
+        from interface_menu import afficher_menu
         afficher_menu(app, cadre_principal)
     else:
-        label_message.configure(text="Nom d’utilisateur ou mot de passe incorrect.", text_color="red")
+        label_message.configure(text="Nom d’utilisateur ou mot de passe incorrect ", text_color="red")
 
 
 #fct creant l'app

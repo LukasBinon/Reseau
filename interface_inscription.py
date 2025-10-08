@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+from database import ajouter_utilisateur
 
 def afficher_page_inscription(app, cadre_principal, afficher_page_connexion):
 
@@ -99,14 +99,16 @@ def afficher_page_inscription(app, cadre_principal, afficher_page_connexion):
 
 
 
-def verifier_inscription(utilisateur, mot_de_passe, confirmation, label_message, app, cadre_principal, afficher_page_connexion):
 
+
+def verifier_inscription(utilisateur, mot_de_passe, confirmation, label_message, app, cadre_principal, afficher_page_connexion):
     if not utilisateur or not mot_de_passe or not confirmation:
         label_message.configure(text="Veuillez remplir tous les champs.", text_color="red")
-
     elif mot_de_passe != confirmation:
         label_message.configure(text="Les mots de passe ne correspondent pas.", text_color="red")
-
     else:
-        label_message.configure(text="Compte créé avec succès ", text_color="green")
-        label_message.after(1000, lambda: afficher_page_connexion(app, cadre_principal, afficher_page_inscription))
+        if ajouter_utilisateur(utilisateur, mot_de_passe):
+            label_message.configure(text="Compte créé avec succès ", text_color="green")
+            label_message.after(1000, lambda: afficher_page_connexion(app, cadre_principal, afficher_page_inscription))
+        else:
+            label_message.configure(text="Nom d’utilisateur déjà existant ", text_color="red")
