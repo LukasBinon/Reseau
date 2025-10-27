@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+import session
 
 DB_NAME = "reseau.db"
 
@@ -75,13 +76,15 @@ def init_db():
 
 # --- FONCTIONS UTILISATEUR ---
 
+
+
 def hash_password(password: str) -> str:
     """Retourne le hash SHA256 du mot de passe"""
     return hashlib.sha256(password.encode()).hexdigest()
 
 
 def ajouter_utilisateur(nom, mot_de_passe):
-    """Ajoute un utilisateur à la base"""
+    """Ajoute un utilisateur à la base et retourne son ID"""
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -90,10 +93,20 @@ def ajouter_utilisateur(nom, mot_de_passe):
             (nom, hash_password(mot_de_passe)),
         )
         conn.commit()
+        user_id = cur.lastrowid  # Récupère l'ID généré
         conn.close()
-        return True
+        return user_id
     except sqlite3.IntegrityError:
-        return False
+        return None
+
+def get_user_id(nom):
+    """Retourne l'ID d'un utilisateur existant"""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id_utilisateur FROM utilisateur WHERE nom_utilisateur = ?", (nom,))
+    row = cur.fetchone()
+    conn.close()
+    return row[0] if row else None
 
 
 def verifier_identifiants(nom, mot_de_passe):
@@ -107,5 +120,7 @@ def verifier_identifiants(nom, mot_de_passe):
     row = cur.fetchone()
     conn.close()
     if row and row[0] == hash_password(mot_de_passe):
+        session.utilisateur_connecte_id = get_user_id(nom)
         return True
     return False
+

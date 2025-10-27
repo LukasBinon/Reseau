@@ -2,6 +2,7 @@ import ipaddress
 import customtkinter as ctk
 from tkinter import messagebox
 
+import session
 from database import get_connection, get_user_id
 
 
@@ -383,7 +384,7 @@ def afficher_resultats(entry_reseau, entry_nb, table_container):
         messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
 # Enregistrement dans la base
     try:
-        id_utilisateur = get_user_id("lukas")  # Remplace "admin" par l'utilisateur connecté
+        id_utilisateur = session.utilisateur_connecte_id
         if id_utilisateur is not None:
             enregistrer_decoupe(
             nom_decoupe=nom_decoupe,
@@ -454,19 +455,20 @@ def enregistrer_decoupe(nom_decoupe, mode, ip_reseau, masque, nb_sous_reseaux, n
     conn.commit()
     conn.close()
 
-ctk.set_appearance_mode("system")  # "dark" ou "light"
-ctk.set_default_color_theme("blue")
+def ouvrir_fenetre_decoupe():
+    ctk.set_appearance_mode("system")  # "dark" ou "light"
+    ctk.set_default_color_theme("blue")
 
-app = ctk.CTk()
-app.geometry("1200x800")
+    app = ctk.CTk()
+    app.geometry("1200x800")
 
-configurer_fenetre(app)
-frame = creer_frame_principale(app)
-creer_titre(frame)
+    configurer_fenetre(app)
+    frame = creer_frame_principale(app)
+    creer_titre(frame)
 
-entry_reseau, entry_nb = creer_zone_saisie(frame)
-table_container = creer_tableau(frame)
-creer_bouton_calculer(frame, entry_reseau, entry_nb, table_container)
-creer_bouton_quitter(frame, app)
+    entry_reseau, entry_nb = creer_zone_saisie(frame)
+    table_container = creer_tableau(frame)
+    creer_bouton_calculer(frame, entry_reseau, entry_nb, table_container)
+    creer_bouton_quitter(frame, app)
 
-app.mainloop()
+    app.mainloop()
