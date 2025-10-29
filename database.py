@@ -124,3 +124,29 @@ def verifier_identifiants(nom, mot_de_passe):
         return True
     return False
 
+
+# --- FONCTIONS HISTORIQUE ---
+def ajouter_test_historique(type_test, entree, resultat, est_valide, id_utilisateur):
+    """Ajoute une entrée à l'historique des tests."""
+
+    # Sécurité : ne rien faire si l'utilisateur n'est pas connecté
+    if id_utilisateur is None:
+        print("Avertissement: Tentative de log sans id_utilisateur.")
+        return
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO historique_tests (type_test, entree, resultat, est_valide, id_utilisateur)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (type_test, entree, resultat, est_valide, id_utilisateur)
+        )
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        # Dans une vraie application, on pourrait logger cette erreur dans un fichier
+        print(f"Erreur lors de l'enregistrement de l'historique : {e}")
+

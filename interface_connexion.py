@@ -110,7 +110,7 @@ def verifier_connexion(utilisateur, mot_de_passe, label_message, app, cadre_prin
         label_message.configure(text="Nom d’utilisateur ou mot de passe incorrect ", text_color="red")
 
 
-#fct creant l'app
+# fct creant l'app
 def creer_application():
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("dark-blue")
@@ -118,9 +118,17 @@ def creer_application():
     app = ctk.CTk()
     app.title("Mon appli réseau - Connexion")
 
+    # --- DÉBUT DE LA MODIFICATION ---
+
+    # Ajoutez cette ligne pour forcer l'initialisation de la fenêtre
+    app.update_idletasks()
+
+    # Ces lignes fonctionneront maintenant correctement
     largeur = app.winfo_screenwidth()
     hauteur = app.winfo_screenheight()
     app.geometry(f"{largeur}x{hauteur}+0+0")
+
+    # --- FIN DE LA MODIFICATION ---
 
     return app
 
