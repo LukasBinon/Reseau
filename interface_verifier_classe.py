@@ -115,7 +115,7 @@ def ouvrir_fenetre():
     ctk.set_default_color_theme("dark-blue")
 
     app = ctk.CTk()
-    app.title("🔍 Vérificateur d’adresse IP")
+    app.title("Vérificateur d’adresse IP")
     app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0")
     app.configure(fg_color=THEME_BACKGROUND)
 
@@ -162,7 +162,7 @@ def ouvrir_fenetre():
                 corner_radius=8
             ).grid(row=0, column=j, padx=5, pady=8, sticky="nsew")
 
-    bouton = ctk.CTkButton(frame_inputs, text="✅ Vérifier", width=150, height=40,
+    bouton = ctk.CTkButton(frame_inputs, text="Vérifier", width=150, height=40,
                             fg_color=THEME_BLUE, hover_color=THEME_BLUE_HOVER,
                             text_color="white", font=("Segoe UI", 14, "bold"),
                             command=bouton_clique)

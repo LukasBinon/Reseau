@@ -118,17 +118,13 @@ def creer_application():
     app = ctk.CTk()
     app.title("Mon appli réseau - Connexion")
 
-    # --- DÉBUT DE LA MODIFICATION ---
-
-    # Ajoutez cette ligne pour forcer l'initialisation de la fenêtre
+    #forcer l'initialisation de la fenêtre
     app.update_idletasks()
 
-    # Ces lignes fonctionneront maintenant correctement
+
     largeur = app.winfo_screenwidth()
     hauteur = app.winfo_screenheight()
     app.geometry(f"{largeur}x{hauteur}+0+0")
-
-    # --- FIN DE LA MODIFICATION ---
 
     return app
 

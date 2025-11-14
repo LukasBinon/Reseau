@@ -1,8 +1,7 @@
-
 import customtkinter as ctk
 import Test
 import recherche_decoupe
-import verification_vlsm
+import interface_verification_vlsm
 import interface_verifier_classe
 
 
@@ -34,7 +33,8 @@ def afficher_menu(app, cadre_principal):
         ("2 Vérifier appartenance IP", lambda: print("Ouverture fonction 2")),
         ("3 Vérifier découpe classique possible", lambda: print("Ouverture fonction 3")),
         ("4 Réaliser découpe classique (plan d’adressage)", lambda: Test.ouvrir_fenetre_decoupe() ),
-        ("5 Vérifier découpe VLSM possible", lambda: verification_vlsm.ouvrir_fenetre_verification_vlsm()),
+        # La ligne suivante est corrigée :
+        ("5 Vérifier découpe VLSM possible", lambda: interface_verification_vlsm.ouvrir_fenetre_verification_vlsm()),
         ("6 Vérifier la classe", lambda: interface_verifier_classe.ouvrir_fenetre()),
         ("7 Rechercher une découpe", lambda: recherche_decoupe.ouvrir_fenetre_recherche_decoupe() ),
     ]
