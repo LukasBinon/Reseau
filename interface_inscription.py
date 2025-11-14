@@ -97,10 +97,6 @@ def afficher_page_inscription(app, cadre_principal, afficher_page_connexion):
     )
     bouton_retour.pack(pady=10)
 
-
-
-
-
 def verifier_inscription(utilisateur, mot_de_passe, confirmation, label_message, app, cadre_principal, afficher_page_connexion):
     if not utilisateur or not mot_de_passe or not confirmation:
         label_message.configure(text="Veuillez remplir tous les champs.", text_color="red")
