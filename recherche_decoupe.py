@@ -16,30 +16,7 @@ THEME_BACKGROUND = "#1c1c1e"
 def get_connection():
     return sqlite3.connect(DB_NAME)
 
-def rechercher_decoupe(nom_decoupe):
-    conn = get_connection()
-    cur = conn.cursor()
 
-    cur.execute("SELECT id_decoupe, id_responsable FROM decoupe WHERE nom_decoupe = ?", (nom_decoupe,))
-    row = cur.fetchone()
-    if not row:
-        conn.close()
-        return None, []
-
-    id_decoupe, id_responsable = row
-    if id_responsable != session.utilisateur_connecte_id:
-        conn.close()
-        messagebox.showerror("Erreur", "Vous n'avez pas les droits pour consulter cette découpe.")
-        return None, []
-
-    cur.execute("""
-        SELECT ip_reseau, masque, ip_debut, ip_fin, ip_broadcast, nb_ips
-        FROM sous_reseau
-        WHERE id_decoupe = ?
-    """, (id_decoupe,))
-    sous_reseaux = cur.fetchall()
-    conn.close()
-    return id_decoupe, sous_reseaux
 
 
 def ouvrir_fenetre_recherche_decoupe():
@@ -63,10 +40,35 @@ def ouvrir_fenetre_recherche_decoupe():
                              width=300, height=40, font=("Segoe UI", 14))
     entry_nom.grid(row=0, column=1, padx=10)
 
+    def rechercher_decoupe(nom_decoupe):
+        conn = get_connection()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id_decoupe, id_responsable FROM decoupe WHERE nom_decoupe = ?", (nom_decoupe,))
+        row = cur.fetchone()
+        if not row:
+            conn.close()
+            return None, []
+
+        id_decoupe, id_responsable = row
+        if id_responsable != session.utilisateur_connecte_id:
+            conn.close()
+            messagebox.showerror("Erreur", "Vous n'avez pas les droits pour consulter cette découpe.", parent=app)
+            return None, []
+
+        cur.execute("""
+                    SELECT ip_reseau, masque, ip_debut, ip_fin, ip_broadcast, nb_ips
+                    FROM sous_reseau
+                    WHERE id_decoupe = ?
+                    """, (id_decoupe,))
+        sous_reseaux = cur.fetchall()
+        conn.close()
+        return id_decoupe, sous_reseaux
+
     def afficher_decoupe():
         nom = entry_nom.get().strip()
         if not nom:
-            messagebox.showerror("Erreur", "Veuillez entrer un nom de découpe.")
+            messagebox.showerror("Erreur", "Veuillez entrer un nom de découpe.", parent=app)
             return
 
         _, sous_reseaux = rechercher_decoupe(nom)
@@ -74,7 +76,7 @@ def ouvrir_fenetre_recherche_decoupe():
             widget.destroy()
 
         if not sous_reseaux:
-            messagebox.showinfo("Résultat", "Aucune découpe trouvée avec ce nom.")
+            messagebox.showinfo("Résultat", "Aucune découpe trouvée avec ce nom.", parent=app)
             return
 
         colonnes = ["IP Réseau", "Masque", "IP Début", "IP Fin", "Broadcast", "Nb IPs"]
