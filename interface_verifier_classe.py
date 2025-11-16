@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 import session
 import re
 from ipaddress import IPv4Network, AddressValueError
@@ -13,19 +14,6 @@ THEME_GREY_HOVER = "#3a3a3a"
 THEME_BLUE = "#0078d7"
 THEME_BLUE_HOVER = "#005a9e"
 THEME_TEXT_WHITE = "#ffffff"
-
-# Fonction pour afficher une popup élégante
-def afficher_popup(titre, message):
-    popup = ctk.CTkToplevel()
-    popup.geometry("300x150")
-    popup.title(titre)
-    popup.grab_set()  # Empêche l'interaction avec la fenêtre principale
-
-    label = ctk.CTkLabel(popup, text=message, wraplength=250, justify="center")
-    label.pack(pady=20)
-
-    btn_close = ctk.CTkButton(popup, text="Fermer", command=popup.destroy)
-    btn_close.pack(pady=10)
 
 def ouvrir_fenetre():
     historique_resultats = []  # Liste pour stocker tous les résultats
@@ -54,7 +42,7 @@ def ouvrir_fenetre():
 
         # Vérification IP
         if not ipv4_valide(ip):
-            afficher_popup("Erreur", "Adresse IP invalide")
+            messagebox.showerror("Erreur", "Adresse IP invalide", parent=app)
             # Ajout dans historique + DB
             ajouter_test_historique(
                 type_test="Vérification IP",
@@ -71,16 +59,16 @@ def ouvrir_fenetre():
                     if re.match(r"^(0|255)\.(0|255)\.(0|255)\.(0|255)$", masque):
                         ip_complet = f"{ip}/{masque}"
                     else:
-                        afficher_popup("Erreur", "Masque invalide")
+                        messagebox.showerror("Erreur", "Masque invalide", parent=app)
                         ajouter_test_historique("Vérification IP", ip, "Masque invalide", False, user_id)
                 else:
-                    afficher_popup("Erreur", "Veuillez entrer un CIDR ou un masque.")
+                    messagebox.showerror("Erreur", "Veuillez entrer un CIDR ou un masque", parent=app)
                     ajouter_test_historique("Vérification IP", ip, "CIDR ou masque manquant", False, user_id)
 
                 if ip_complet is not None:
                     reseau = IPv4Network(ip_complet, strict=False)
                     if not 8 <= reseau.prefixlen <= 30:
-                        afficher_popup("Erreur", "Masque invalide")
+                        messagebox.showerror("Erreur", "Masque invalide", parent=app)
                         historique_resultats.append([ip, f"/{cidr}" or masque or "-", "-", "❌"])
                         ajouter_test_historique("Vérification IP", ip_complet, "Masque invalide", False, user_id)
                     else:
@@ -92,7 +80,7 @@ def ouvrir_fenetre():
                             historique_resultats.append([ip, f"/{cidr}" if cidr else masque, classe.value, "✅"])
                             ajouter_test_historique("Vérification IP", ip_complet, f"{classe.value}", True, user_id)
             except ValueError:
-                afficher_popup("Erreur", "Adresse IP ou masque invalide.")
+                messagebox.showerror("Erreur", "Adresse IP ou masque invalide", parent=app)
                 ajouter_test_historique("Vérification IP", ip, "Adresse IP ou masque invalide", False, user_id)
 
         # Affichage de tout l'historique (dernier en haut)
