@@ -23,7 +23,7 @@ def calculer_bloc_ip(nb_ips_utilisables: int) -> int:
     return taille_bloc
 
 
-def verifier_possibilite_vlsm(reseau_de_base_str: str, masque_str: str | None, besoins_list: list[int]):
+def verifier_possibilite_vlsm(reseau_de_base_str: str, masque_str: str | None, besoin_unique: int):
     """
     Vérifie si une liste de besoins (nb d'IP) peut tenir dans un réseau de base.
     besoins_list: une liste d'entiers [100, 50, 30]
@@ -62,19 +62,14 @@ def verifier_possibilite_vlsm(reseau_de_base_str: str, masque_str: str | None, b
         raise ValueError(f"Réseau de base ou masque invalide : {e}")
 
     #  parse la liste des besoins
-    if not besoins_list:
-        raise ValueError("La liste des besoins ne peut être vide.")
-
-    total_ips_requises = 0
+    if besoin_unique is None:
+        raise ValueError("Le besoin ne peut être vide.")
 
     # calcule le total requis
-    for besoin in sorted(besoins_list, reverse=True):
-        try:
-            taille_bloc = calculer_bloc_ip(besoin)
-            total_ips_requises += taille_bloc
-
-        except ValueError as e:
-            raise ValueError(f"Besoin invalide ({besoin}) : {e}")
+    try:
+        total_ips_requises = calculer_bloc_ip(besoin_unique)
+    except ValueError as e:
+        raise ValueError(f"Besoin invalide ({besoin_unique}) : {e}")
 
     # compare ip requise et dispo
     possible = total_ips_requises <= total_ips_disponibles

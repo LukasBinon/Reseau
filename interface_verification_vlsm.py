@@ -106,34 +106,20 @@ def ouvrir_fenetre_verification_vlsm():
             return
 
         try:
-            besoins_list = []
-
-            #coupe la chaîne aux virgules
-            morceaux = besoins_str.split(',')
-            for b in morceaux:
-                # enleve les espace
-                morceau_propre = b.strip()
-
-                if morceau_propre:
-                    # convertit en nombre et on l'ajoute à la liste
-                    nombre = int(morceau_propre)
-                    besoins_list.append(nombre)
-
-            # À la fin, besoins_list contient [100, 50, 20]
-            if not besoins_list:
-                raise ValueError("Liste de besoins vide.")
-        except ValueError as e:
-            msg = "Format des besoins invalide. Utilisez des nombres séparés par des virgules (ex: 100, 50, 20)."
+            besoin_unique = int(besoins_str)
+        except ValueError:
+            msg = "Besoin invalide, Entrer un entier."
             messagebox.showerror("Erreur", msg, parent=app_vlsm)
             return
 
         try:
-            # appel de la fonction logique importée
-            possible, message = verifier_possibilite_vlsm(reseau, masque, besoins_list)
+            # appel de la fonction
+            possible, message = verifier_possibilite_vlsm(reseau, masque, besoin_unique)
 
-            result_textbox.configure(state="normal") #rend zone texte modifiable
-            result_textbox.delete("1.0", "end") #Efface le résultat précédent.
-            result_textbox.insert("1.0", message) #ecrit un nv msg
+            #rend textbox modifiable
+            result_textbox.configure(state="normal")
+            result_textbox.delete("1.0", "end") #supprime la textbox et ajoute un autre
+            result_textbox.insert("1.0", message)
 
             if possible:
                 result_textbox.configure(text_color="#4CAF50")
