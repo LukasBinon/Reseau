@@ -4,7 +4,6 @@ import session
 
 DB_NAME = "reseau.db"
 
-
 def get_connection():
     """Crée la connexion vers la base SQLite"""
     return sqlite3.connect(DB_NAME)
@@ -31,7 +30,7 @@ def init_db():
         masque TEXT NOT NULL,
         nombre_sous_reseaux INTEGER,
         nombre_ips_par_sr INTEGER,
-        type_decoupe TEXT CHECK(type_decoupe IN ('classique','vlsm')) NOT NULL,
+        type_decoupe TEXT CHECK(type_decoupe IN ('classique')) NOT NULL,
         date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         id_responsable INTEGER NOT NULL,
         FOREIGN KEY(id_responsable) REFERENCES utilisateur(id_utilisateur)
