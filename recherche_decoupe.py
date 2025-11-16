@@ -5,35 +5,36 @@ import session
 
 DB_NAME = "reseau.db"
 
-# === Couleurs et style du thème ===
-THEME_BLUE = "#2D89EF"
-THEME_BLUE_HOVER = "#2563EB"
-THEME_GREY_BUTTON = "#2c2c2e"
-THEME_GREY_HOVER = "#3a3a3c"
-THEME_TEXT_WHITE = "white"
-THEME_BACKGROUND = "#1c1c1e"
+
+bleu = "#2D89EF"
+bleuHover = "#2563EB"
+gris = "#2c2c2e"
+grisHover = "#3a3a3c"
+blanc = "white"
+bg = "#1c1c1e"
 
 def get_connection():
     return sqlite3.connect(DB_NAME)
-
-
-
 
 def ouvrir_fenetre_recherche_decoupe():
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("dark-blue")
 
-    app = ctk.CTk()
-    app.title("🔍 Recherche de Découpe Réseau")
-    app.geometry("900x600")
-    app.configure(fg_color=THEME_BACKGROUND)
+    app = ctk.CTkToplevel()
+    app.title("Recherche de Découpe Réseau")
+    app.state('zoomed')
+    app.configure(fg_color=bg)
+
+    #assure que la fenêtre reste au-dessus
+    app.transient()
+    app.grab_set()
 
     # --- Zone de recherche ---
-    frame = ctk.CTkFrame(app, fg_color=THEME_GREY_BUTTON, corner_radius=15)
+    frame = ctk.CTkFrame(app, fg_color=gris, corner_radius=15)
     frame.pack(pady=30, padx=30, fill="x")
 
     label_nom = ctk.CTkLabel(frame, text="Nom de la découpe :",
-                             text_color=THEME_TEXT_WHITE, font=("Segoe UI", 16, "bold"))
+                             text_color=blanc, font=("Segoe UI", 16, "bold"))
     label_nom.grid(row=0, column=0, padx=20, pady=20, sticky="w")
 
     entry_nom = ctk.CTkEntry(frame, placeholder_text="Ex: Réseau Bureau",
@@ -84,34 +85,34 @@ def ouvrir_fenetre_recherche_decoupe():
         # Entêtes
         for j, col in enumerate(colonnes):
             ctk.CTkLabel(tableau_frame, text=col, font=("Segoe UI", 16, "bold"),
-                         fg_color=THEME_BLUE, text_color="white", corner_radius=8).grid(
+                         fg_color=bleu, text_color="white", corner_radius=8).grid(
                 row=0, column=j, padx=5, pady=8, sticky="nsew"
             )
 
         # Données
         for i, sr in enumerate(sous_reseaux, start=1):
-            bg_color = THEME_GREY_HOVER if i % 2 == 0 else THEME_GREY_BUTTON
+            bg_color = grisHover if i % 2 == 0 else gris
             for j, val in enumerate(sr):
                 ctk.CTkLabel(tableau_frame, text=str(val),
-                             font=("Segoe UI", 14), text_color=THEME_TEXT_WHITE,
+                             font=("Segoe UI", 14), text_color=blanc,
                              fg_color=bg_color, corner_radius=6).grid(
                     row=i, column=j, padx=5, pady=5, sticky="nsew"
                 )
 
     btn_rechercher = ctk.CTkButton(frame, text="Rechercher", width=150, height=40,
-                                   fg_color=THEME_BLUE, hover_color=THEME_BLUE_HOVER,
+                                   fg_color=bleu, hover_color=bleuHover,
                                    text_color="white", font=("Segoe UI", 14, "bold"),
                                    command=afficher_decoupe)
     btn_rechercher.grid(row=0, column=2, padx=20)
 
     # --- Tableau des résultats ---
-    tableau_frame = ctk.CTkScrollableFrame(app, corner_radius=12, fg_color=THEME_GREY_BUTTON)
+    tableau_frame = ctk.CTkScrollableFrame(app, corner_radius=12, fg_color=gris)
     tableau_frame.pack(padx=30, pady=20, fill="both", expand=True)
 
     # --- Bouton de fermeture ---
     btn_quitter = ctk.CTkButton(app, text="Fermer", width=120, height=40,
-                                fg_color=THEME_GREY_BUTTON, hover_color=THEME_GREY_HOVER,
-                                text_color="white", font=("Segoe UI", 14, "bold"),
+                                fg_color=gris, hover_color=grisHover,
+                                 text_color="white", font=("Segoe UI", 14, "bold"),
                                 command=app.destroy)
     btn_quitter.pack(pady=10)
 

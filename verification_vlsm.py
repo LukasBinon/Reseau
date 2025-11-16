@@ -76,7 +76,7 @@ def verifier_possibilite_vlsm(reseau_de_base_str: str, masque_str: str | None, b
         except ValueError as e:
             raise ValueError(f"Besoin invalide ({besoin}) : {e}")
 
-    #  compare
+    # compare ip requise et dispo
     possible = total_ips_requises <= total_ips_disponibles
 
     message = (

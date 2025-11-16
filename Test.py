@@ -5,6 +5,13 @@ from tkinter import messagebox
 import session
 from database import get_connection, get_user_id
 
+bleu = "#2D89EF"
+bleuHover = "#2563EB"
+gris = "#2c2c2e"
+grisHover = "#3a3a3c"
+blanc = "white"
+bg = "#1c1c1e"
+
 def enregistrer_historique(type_test: str, entree: str, resultat: str, est_valide: bool, id_utilisateur: int | None):
     """
     Enregistre un test dans la table historique_tests
@@ -23,12 +30,14 @@ def enregistrer_historique(type_test: str, entree: str, resultat: str, est_valid
         conn.close()
 
 def ouvrir_fenetre_decoupe():
-    ctk.set_appearance_mode("system")
-    ctk.set_default_color_theme("blue")
+
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("dark-blue")
 
     app = ctk.CTkToplevel()
     app.title("Calculateur de découpe réseau IP")
     app.state('zoomed')
+    app.configure(fg_color=bg)
 
     app.transient()
     app.grab_set()
@@ -170,68 +179,68 @@ def ouvrir_fenetre_decoupe():
     #   UI (compatible ton main)
     # =========================
     def configurer_fenetre(app):
-        app.title("🌐 Calculateur de Découpe Réseau IP")
+        app.title("Calculateur de Découpe Réseau IP")
         app.update_idletasks()
 
     def creer_frame_principale(app):
-        frame = ctk.CTkFrame(app, corner_radius=20)
+
+        # utilisation de bg pour la couleur de fond
+        frame = ctk.CTkFrame(app, corner_radius=20, fg_color=bg)
         frame.pack(fill="both", expand=True, padx=50, pady=40)
         return frame
 
     def creer_titre(frame):
+
+
         titre = ctk.CTkLabel(
             frame,
-            text="🌐 Calculateur de Découpe Réseau IP",
-            font=("Arial", 36, "bold")
+            text="Calculateur de Découpe Réseau IP",
+            font=("Arial", 36, "bold"),
+            text_color=bleu
         )
         titre.pack(pady=30)
 
     def creer_zone_saisie(frame):
         """
         ⚠️ Compat : renvoie toujours (entry_reseau, entry_nb) comme dans ton main.
-        Mais on ajoute en interne :
-          - entry_masque (si l'IP n'a pas de CIDR)
-          - entry_nb_ip (nombre d'IP utilisables / SR)
-          - entry_nom_decoupe (nom de la découpe)
-          - mode_var (classful/classless)
         """
         # Ligne -1 : Choix du mode IP
-        mode_frame = ctk.CTkFrame(frame, corner_radius=10)
+        mode_frame = ctk.CTkFrame(frame, corner_radius=10, fg_color=gris)
         mode_frame.pack(pady=(10, 0), padx=30, fill="x")
 
-        mode_label = ctk.CTkLabel(mode_frame, text="Type d'adresse IP :", font=("Arial", 16, "bold"))
+        mode_label = ctk.CTkLabel(mode_frame, text="Type d'adresse IP :", font=("Arial", 16, "bold"), text_color=blanc)
         mode_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
 
         mode_var = ctk.StringVar(value="classless")
         radio_classful = ctk.CTkRadioButton(mode_frame, text="Classful", variable=mode_var, value="classful",
-                                            font=("Arial", 14))
+                                            font=("Arial", 14), text_color=blanc)
         radio_classless = ctk.CTkRadioButton(mode_frame, text="Classless", variable=mode_var, value="classless",
-                                             font=("Arial", 14))
+                                             font=("Arial", 14), text_color=blanc)
         radio_classful.grid(row=0, column=1, padx=10)
         radio_classless.grid(row=0, column=2, padx=10)
 
         # Ligne 0 : Nom de la découpe
-        nom_frame = ctk.CTkFrame(frame, corner_radius=10)
+        nom_frame = ctk.CTkFrame(frame, corner_radius=10, fg_color=gris)
         nom_frame.pack(pady=(10, 0), padx=30, fill="x")
 
-        ctk.CTkLabel(nom_frame, text="Nom de la découpe :", font=("Arial", 16, "bold")).grid(row=0, column=0, padx=20,
+        ctk.CTkLabel(nom_frame, text="Nom de la découpe :", font=("Arial", 16, "bold"), text_color=blanc).grid(row=0, column=0, padx=20,
                                                                                              pady=10, sticky="w")
         entry_nom_decoupe = ctk.CTkEntry(nom_frame, placeholder_text="Ex: Réseau bureau", width=300, height=40,
                                          font=("Arial", 14))
         entry_nom_decoupe.grid(row=0, column=1, padx=20, pady=10)
 
         # Ligne 1 : Réseau de base + masque
-        input_frame = ctk.CTkFrame(frame, corner_radius=15)
+        input_frame = ctk.CTkFrame(frame, corner_radius=15, fg_color=gris)
         input_frame.pack(pady=20, padx=30, fill="x")
 
-        ctk.CTkLabel(input_frame, text="Réseau de base :", font=("Arial", 16, "bold")).grid(row=0, column=0, padx=20,
+        ctk.CTkLabel(input_frame, text="Réseau de base :", font=("Arial", 16, "bold"), text_color=blanc).grid(row=0, column=0, padx=20,
                                                                                             pady=15, sticky="w")
         entry_reseau = ctk.CTkEntry(input_frame, placeholder_text="Ex: 192.168.1.0 ou 192.168.1.0/24", width=260,
                                     height=40, font=("Arial", 14))
         entry_reseau.grid(row=0, column=1, padx=20, pady=15)
         entry_reseau.insert(0, "192.168.1.0")
 
-        ctk.CTkLabel(input_frame, text="Masque (si pas CIDR) :", font=("Arial", 16, "bold")).grid(row=0, column=2,
+        ctk.CTkLabel(input_frame, text="Masque (si pas CIDR) :", font=("Arial", 16, "bold"), text_color=blanc).grid(row=0, column=2,
                                                                                                   padx=20, pady=15,
                                                                                                   sticky="w")
         entry_masque = ctk.CTkEntry(input_frame, placeholder_text="Ex: 255.255.255.0 ou /24", width=200, height=40,
@@ -272,7 +281,7 @@ def ouvrir_fenetre_decoupe():
         radio_classless.configure(command=mettre_a_jour_masque)
 
         # Ligne 2 : Nombre de sous-réseaux + IP utilisables
-        ctk.CTkLabel(input_frame, text="Nombre de sous-réseaux :", font=("Arial", 16, "bold")).grid(row=1, column=0,
+        ctk.CTkLabel(input_frame, text="Nombre de sous-réseaux :", font=("Arial", 16, "bold"), text_color=blanc).grid(row=1, column=0,
                                                                                                     padx=20, pady=15,
                                                                                                     sticky="w")
         entry_nb = ctk.CTkEntry(input_frame, placeholder_text="Ex: 4 (optionnel)", width=200, height=40,
@@ -280,7 +289,7 @@ def ouvrir_fenetre_decoupe():
         entry_nb.grid(row=1, column=1, padx=20, pady=15)
         entry_nb.insert(0, "4")
 
-        ctk.CTkLabel(input_frame, text="Nb d'IP utilisables / SR :", font=("Arial", 16, "bold")).grid(row=1, column=2,
+        ctk.CTkLabel(input_frame, text="Nb d'IP utilisables / SR :", font=("Arial", 16, "bold"), text_color=blanc).grid(row=1, column=2,
                                                                                                       padx=20, pady=15,
                                                                                                       sticky="w")
         entry_nb_ip = ctk.CTkEntry(input_frame, placeholder_text="Ex: 50 (optionnel)", width=200, height=40,
@@ -300,10 +309,14 @@ def ouvrir_fenetre_decoupe():
         input_frame = frame.winfo_children()[2]
         bouton = ctk.CTkButton(
             input_frame,
-            text="✨ Calculer",
+            text="Calculer",
             command=lambda: afficher_resultats(entry_reseau, entry_nb, table_container),
             width=150,
             height=40,
+
+            fg_color=bleu,
+            hover_color=bleuHover,
+            text_color=blanc,
             font=("Arial", 16, "bold"),
             corner_radius=10
         )
@@ -311,7 +324,8 @@ def ouvrir_fenetre_decoupe():
         bouton.grid(row=2, column=0, columnspan=4, padx=20, pady=10, sticky="w")
 
     def creer_tableau(frame):
-        table_container = ctk.CTkScrollableFrame(frame, corner_radius=15)
+        # Utilisation de gris pour la couleur de fond du tableau
+        table_container = ctk.CTkScrollableFrame(frame, corner_radius=15, fg_color=gris)
         table_container.pack(fill="both", expand=True, padx=30, pady=20)
         return table_container
 
@@ -380,7 +394,7 @@ def ouvrir_fenetre_decoupe():
                 table_container,
                 text=f"Découpe '{nom_decoupe}' de {net.with_prefixlen} en /{prefix}  (SR générés: {len(donnees)})",
                 font=("Arial", 14, "bold"),
-                text_color=("#1f538d", "#8ab4f8")
+                text_color=bleu # Utilisation de bleu
             )
             info.grid(row=0, column=0, columnspan=5, padx=8, pady=(4, 4), sticky="w")
 
@@ -394,15 +408,17 @@ def ouvrir_fenetre_decoupe():
                     font=("Arial", 18, "bold"),
                     width=220,
                     anchor="center",
-                    fg_color=("#3b8ed0", "#1f538d"),
-                    text_color="white",
+                    # COULEURS MODIFIÉES (Entêtes en bleu)
+                    fg_color=bleu,
+                    text_color=blanc,
                     corner_radius=10
                 )
                 header.grid(row=offset, column=j, padx=8, pady=12, sticky="ew")
 
             # Afficher données sous les entêtes (avec offset)
             for i, ligne in enumerate(donnees, start=1):
-                bg_color = ("#d9d9d9", "#2b2b2b") if i % 2 == 0 else ("#e6e6e6", "#333333")
+                # Utilisation des couleurs gris et grisHover pour les lignes
+                bg_color = grisHover if i % 2 == 0 else gris
                 for j, valeur in enumerate(ligne):
                     cell = ctk.CTkLabel(
                         table_container,
@@ -411,6 +427,7 @@ def ouvrir_fenetre_decoupe():
                         width=220,
                         anchor="center",
                         fg_color=bg_color,
+                        text_color=blanc,
                         corner_radius=8
                     )
                     cell.grid(row=i + offset, column=j, padx=8, pady=6, sticky="ew")
@@ -419,7 +436,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(ve),  # ou str(nie), ou str(e) selon l'exception
+                resultat=str(ve),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -428,7 +445,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(nie),  # ou str(nie), ou str(e) selon l'exception
+                resultat=str(nie),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -437,7 +454,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(e),  # ou str(nie), ou str(e) selon l'exception
+                resultat=str(e),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -475,7 +492,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(ve),  # ou str(nie), ou str(e) selon l'exception
+                resultat=str(ve),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -484,10 +501,14 @@ def ouvrir_fenetre_decoupe():
     def creer_bouton_quitter(frame, app):
         bouton = ctk.CTkButton(
             frame,
-            text="❌ Quitter",
-            command=app.quit,
+            text="Fermer", # Changé de "Quitter" à "Fermer" pour être plus clair
+            command=app.destroy, # Changé de app.quit à app.destroy pour une CTkToplevel
             width=150,
             height=40,
+            # COULEURS MODIFIÉES
+            fg_color=gris,
+            hover_color=grisHover,
+            text_color=blanc,
             font=("Arial", 14, "bold"),
             corner_radius=10
         )
@@ -510,7 +531,7 @@ def ouvrir_fenetre_decoupe():
                         masque,
                         nb_sous_reseaux,
                         nb_ips_par_sr,
-                        "classique",  # pour l'instant, on ne gère que le mode classique
+                        "classique",
                         id_utilisateur
                     ))
 
@@ -544,7 +565,3 @@ def ouvrir_fenetre_decoupe():
     table_container = creer_tableau(frame)
     creer_bouton_calculer(frame, entry_reseau, entry_nb, table_container)
     creer_bouton_quitter(frame, app)
-
-
-
-
