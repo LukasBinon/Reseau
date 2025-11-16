@@ -3,7 +3,8 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 import session
-from database import get_connection, get_user_id
+from database import get_connection
+
 
 bleu = "#2D89EF"
 bleuHover = "#2563EB"
@@ -11,6 +12,8 @@ gris = "#2c2c2e"
 grisHover = "#3a3a3c"
 blanc = "white"
 bg = "#1c1c1e"
+
+
 
 def enregistrer_historique(type_test: str, entree: str, resultat: str, est_valide: bool, id_utilisateur: int | None):
     """
@@ -389,6 +392,10 @@ def ouvrir_fenetre_decoupe():
                 nb_ips_utilisables=nb_ip
             )
 
+            if net.is_private:
+                messagebox.showerror("Erreur", "Les adresses IP privées ne sont pas autorisées.", parent=app)
+                return
+
             # Bandeau info
             info = ctk.CTkLabel(
                 table_container,
@@ -492,7 +499,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(ve),
+                resultat=str(e),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -513,6 +520,20 @@ def ouvrir_fenetre_decoupe():
             corner_radius=10
         )
         bouton.pack(pady=10)
+
+    def verifier_ip(ip_str: str):
+        try:
+            ip = ipaddress.IPv4Address(ip_str)
+        except ValueError:
+            messagebox.showerror("Erreur", "L'adresse IP entrée est invalide.")
+            return None
+
+        if ip.is_private:
+            messagebox.showerror("Erreur", "L'adresse IP est privée. Entrez une adresse publique.")
+            return None
+
+        # Ici tu continues ton traitement normal
+        return ip
 
     def enregistrer_decoupe(nom_decoupe, mode, ip_reseau, masque, nb_sous_reseaux, nb_ips_par_sr, type_decoupe,
                             id_utilisateur, sous_reseaux):
