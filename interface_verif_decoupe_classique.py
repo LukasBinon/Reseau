@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 import re
 import session
 from database import ajouter_test_historique
@@ -12,23 +13,6 @@ THEME_GREY_HOVER = "#3a3a3a"
 THEME_BLUE = "#0078d7"
 THEME_BLUE_HOVER = "#005a9e"
 THEME_TEXT_WHITE = "#ffffff"
-
-# --- Fonction popup ---
-def afficher_popup(titre, message):
-    popup = ctk.CTkToplevel()
-    popup.geometry("350x180")
-    popup.title(titre)
-    popup.grab_set()
-    popup.configure(fg_color=THEME_BACKGROUND)
-
-    label = ctk.CTkLabel(popup, text=message, wraplength=300, justify="center",
-                         text_color=THEME_TEXT_WHITE, font=("Segoe UI", 14))
-    label.pack(pady=20)
-
-    btn_close = ctk.CTkButton(popup, text="Fermer", command=popup.destroy,
-                              fg_color=THEME_BLUE, hover_color=THEME_BLUE_HOVER,
-                              text_color="white", font=("Segoe UI", 14, "bold"))
-    btn_close.pack(pady=10)
 
 # --- Interface ---
 def ouvrir_fenetre():
@@ -144,7 +128,7 @@ def ouvrir_fenetre():
         try:
             adresse_ip = IPv4Address(ip)
             if determiner_classe(adresse_ip) == ClasseIPV4.CLASSE_RESERVE:
-                afficher_popup("Erreur", "Cette adresse IP est réservé")
+                messagebox.showerror("Erreur", "Cette adreesse IP est réservé", parent=app)
                 ajouter_test_historique(
                     "Vérification pour une découpe classique",
                     f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -154,7 +138,7 @@ def ouvrir_fenetre():
                 )
                 return
         except ValueError:
-            afficher_popup("Erreur", "L'adresse IP est invalide")
+            messagebox.showerror("Erreur", "L'adresse IP est invalide", parent=app)
             ajouter_test_historique(
                 "Vérification pour une découpe classique",
                 f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, Choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -167,7 +151,7 @@ def ouvrir_fenetre():
         # Vérifier le masque donnée par l'utilisateur
         if cidr:
             if not cidr.isdigit():
-                afficher_popup("Erreur", "Le CIDR ne peux contenir que des nombres")
+                messagebox.showerror("Erreur", "Le CIDR ne peux contenir que des nombres", parent=app)
                 ajouter_test_historique(
                     "Vérification pour une découpe classique",
                     f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -178,7 +162,7 @@ def ouvrir_fenetre():
                 return
             cidr = int(cidr)
             if cidr < 8 or cidr > 30:
-                afficher_popup("Erreur", "Le CIDR doit se trouver entre 8 et 30")
+                messagebox.showerror("Erreur", "Le CIDR doit se trouver entre 8 et 30", parent=app)
                 ajouter_test_historique(
                     "Vérification pour une découpe classique",
                     f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -194,7 +178,7 @@ def ouvrir_fenetre():
                 if re.match(r"^(0|255)\.(0|255)\.(0|255)\.(0|255)$", masque):
                     reseau = IPv4Network(f"{ip}/{masque}", strict=False)
                 else:
-                    afficher_popup("Erreur", "Le masque entré n'est pas valide")
+                    messagebox.showerror("Erreur", "Le masque entré n'est pas valide", parent=app)
                     ajouter_test_historique(
                         "Vérification pour une découpe classique",
                         f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -204,7 +188,7 @@ def ouvrir_fenetre():
                     )
                     return
             except ValueError:
-                afficher_popup("Erreur", "Ce masque n'est pas possible")
+                messagebox.showerror("Erreur", "Le masque n'est pas possible", parent=app)
                 ajouter_test_historique(
                     "Vérification pour une découpe classique",
                     f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -214,7 +198,7 @@ def ouvrir_fenetre():
                 )
                 return
         else:
-            afficher_popup("Erreur", "Vous devez entrer un CIDR ou un masque")
+            messagebox.showerror("Erreur", "Vous devez entrer un CIDR ou un masque", parent=app)
             ajouter_test_historique(
                 "Vérification pour une découpe classique",
                 f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -228,7 +212,7 @@ def ouvrir_fenetre():
         try:
             valeur = int(valeur)
             if valeur <= 0:
-                afficher_popup("Erreur", "La valeur entrée doit être supérieur à 0")
+                messagebox.showerror("Erreur", "La valeur entrée doit être supérieur à 0", parent=app)
                 ajouter_test_historique(
                     "Vérification pour une découpe classique",
                     f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
@@ -238,7 +222,7 @@ def ouvrir_fenetre():
                 )
                 return
         except ValueError:
-            afficher_popup("Erreur", "La valeur entrée doit être un nombre")
+            messagebox.showerror("Erreur", "La valeur entrée doit être un nombre", parent=app)
             ajouter_test_historique(
                 "Vérification pour une découpe classique",
                 f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
