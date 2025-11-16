@@ -44,14 +44,18 @@ def ouvrir_fenetre():
     ctk.set_default_color_theme("dark-blue")
 
     # Fenêtre principale
-    app = ctk.CTk()
+
+    app = ctk.CTkToplevel()
     app.title("Vérificateur découpe réseau")
-    app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0")
+    app.state('zoomed')
     app.configure(fg_color=bg)
+
+    app.transient()
+    app.grab_set()
 
     # Frame principal
     frame = ctk.CTkFrame(app, fg_color=bg)
-    frame.pack(fill="both", expand=True, padx=20, pady=20)
+    frame.pack(fill="both", expand=True, padx=6, pady=6)
 
     # Titre
     titre = ctk.CTkLabel(frame, text="Vérificateur découpe réseau",
@@ -121,14 +125,15 @@ def ouvrir_fenetre():
     inputValeur.grid(row=4, column=1, padx=10, pady=15, sticky="w")
 
     # Zone de résultats
-    result_textbox = ctk.CTkTextbox(frame, height=200, font=("Segoe UI", 14),
+    result_textbox = ctk.CTkTextbox(frame, font=("Segoe UI", 14),
                                     state="disabled", wrap="word", corner_radius=10,
                                     fg_color=gris)
-    result_textbox.pack(pady=20, fill="x", expand=True, padx=100)
 
     # Cadre pour les boutons
     button_frame = ctk.CTkFrame(frame, fg_color="transparent")
-    button_frame.pack(pady=20)
+
+    button_frame.pack(side="bottom", pady=20)
+    result_textbox.pack(pady=10, fill="both", expand=True, padx=10)
 
     # Fonction de clic (à définir selon votre logique)
     def bouton_clique():
@@ -319,4 +324,4 @@ def ouvrir_fenetre():
                                 corner_radius=12)
     btn_quitter.pack(side="left", padx=10)
 
-    app.mainloop()
+
