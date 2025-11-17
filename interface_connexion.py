@@ -4,7 +4,6 @@ from database import verifier_identifiants
 
 
 def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
-
     for widget in cadre_principal.winfo_children():
         widget.destroy()
 
@@ -43,14 +42,12 @@ def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
     )
     champ_pass.pack(pady=10)
 
-
     label_message = ctk.CTkLabel(
         cadre_principal,
         text="",
         text_color="red"
     )
     label_message.pack(pady=(5, 0))
-
 
     bouton_connexion = ctk.CTkButton(
         cadre_principal,
@@ -99,14 +96,23 @@ def afficher_page_connexion(app, cadre_principal, afficher_page_inscription):
     bouton_quitter.pack(pady=10)
 
 
-
-
 def verifier_connexion(utilisateur, mot_de_passe, label_message, app, cadre_principal):
     if verifier_identifiants(utilisateur, mot_de_passe):
+
+        # --- CORRECTION APPLIQUÉE ---
+        # On stocke le nom d'utilisateur comme 'user_id' sur l'objet app.
+        # C'est cette ligne qui corrige l'avertissement.
+        app.user_id = utilisateur
+        # --- FIN DE LA CORRECTION ---
+
         label_message.configure(text="Connexion réussie ", text_color="green")
-        from interface_menu import afficher_menu
-        afficher_menu(app, cadre_principal)
+
+        # On attend 1 seconde pour que l'utilisateur voie le message,
+        # puis on affiche le menu.
+        app.after(1000, lambda: afficher_menu(app, cadre_principal))
     else:
+        # Par sécurité, on s'assure que user_id est None si la connexion échoue
+        app.user_id = None
         label_message.configure(text="Nom d’utilisateur ou mot de passe incorrect ", text_color="red")
 
 
@@ -118,9 +124,8 @@ def creer_application():
     app = ctk.CTk()
     app.title("Mon appli réseau - Connexion")
 
-    #forcer l'initialisation de la fenêtre
+    # forcer l'initialisation de la fenêtre
     app.update_idletasks()
-
 
     largeur = app.winfo_screenwidth()
     hauteur = app.winfo_screenheight()
@@ -130,7 +135,6 @@ def creer_application():
 
 
 def creer_cadre_principal(app):
-
     cadre = ctk.CTkFrame(app, corner_radius=0, fg_color="#1c1c1e")
     cadre.pack(fill="both", expand=True)
     return cadre

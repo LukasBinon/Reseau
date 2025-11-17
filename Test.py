@@ -3,7 +3,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 import session
-from database import get_connection, get_user_id
+from database import get_conn, get_user_id
 
 bleu = "#2D89EF"
 bleuHover = "#2563EB"
@@ -17,17 +17,14 @@ def enregistrer_historique(type_test: str, entree: str, resultat: str, est_valid
     Enregistre un test dans la table historique_tests
     """
     try:
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            INSERT INTO historique_tests (type_test, entree, resultat, est_valide, id_utilisateur)
-            VALUES (?, ?, ?, ?, ?)
-        """, (type_test, entree, resultat, est_valide, id_utilisateur))
-        conn.commit()
+        with get_conn() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO historique_tests (type_test, entree, resultat, est_valide, id_utilisateur)
+                VALUES (?, ?, ?, ?, ?)
+            """, (type_test, entree, resultat, est_valide, id_utilisateur))
     except Exception as e:
         messagebox.showwarning("Historique", f"Erreur lors de l'enregistrement dans l'historique : {e}")
-    finally:
-        conn.close()
 
 def ouvrir_fenetre_decoupe():
 
@@ -492,7 +489,7 @@ def ouvrir_fenetre_decoupe():
             enregistrer_historique(
                 type_test="Découpe réseau IP",
                 entree=f"Réseau: {reseau_txt}, Masque: {masque_txt}, Nb SR: {nb_sr}, Nb IP: {nb_ip}, Nom: {nom_decoupe}, Mode: {mode}",
-                resultat=str(ve),
+                resultat=str(e),
                 est_valide=False,
                 id_utilisateur=session.utilisateur_connecte_id
             )
@@ -516,46 +513,43 @@ def ouvrir_fenetre_decoupe():
 
     def enregistrer_decoupe(nom_decoupe, mode, ip_reseau, masque, nb_sous_reseaux, nb_ips_par_sr, type_decoupe,
                             id_utilisateur, sous_reseaux):
-        conn = get_connection()
-        cur = conn.cursor()
+        with get_conn() as conn:
+            cur = conn.cursor()
 
-        # Insérer la découpe
-        cur.execute("""
-                    INSERT INTO decoupe (nom_decoupe, mode, ip_reseau, masque, nombre_sous_reseaux, nombre_ips_par_sr,
-                                         type_decoupe, id_responsable)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """, (
-                        nom_decoupe,
-                        mode,
-                        ip_reseau,
-                        masque,
-                        nb_sous_reseaux,
-                        nb_ips_par_sr,
-                        "classique",
-                        id_utilisateur
-                    ))
-
-        id_decoupe = cur.lastrowid
-
-        # Insérer les sous-réseaux
-        for ligne in sous_reseaux:
-            _, ip_reseau_sr, ip_broadcast, plage, nb_ips = ligne
-            ip_debut, ip_fin = plage.split(" - ") if " - " in plage else ("", "")
+            # Insérer la découpe
             cur.execute("""
-                        INSERT INTO sous_reseau (id_decoupe, ip_reseau, masque, ip_debut, ip_fin, ip_broadcast, nb_ips)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO decoupe (nom_decoupe, mode, ip_reseau, masque, nombre_sous_reseaux, nombre_ips_par_sr,
+                                             date_creation, date_maj,type_decoupe, id_responsable)
+                        VALUES (?, ?, ?, ?, ?, ?,datetime('now'), datetime('now'), ?, ?)
                         """, (
-                            id_decoupe,
-                            ip_reseau_sr,
+                            nom_decoupe,
+                            mode,
+                            ip_reseau,
                             masque,
-                            ip_debut,
-                            ip_fin,
-                            ip_broadcast,
-                            int(nb_ips)
+                            nb_sous_reseaux,
+                            nb_ips_par_sr,
+                            "classique",
+                            id_utilisateur
                         ))
 
-        conn.commit()
-        conn.close()
+            id_decoupe = cur.lastrowid
+
+            # Insérer les sous-réseaux
+            for ligne in sous_reseaux:
+                _, ip_reseau_sr, ip_broadcast, plage, nb_ips = ligne
+                ip_debut, ip_fin = plage.split(" - ") if " - " in plage else ("", "")
+                cur.execute("""
+                            INSERT INTO sous_reseau (id_decoupe, ip_reseau, masque, ip_debut, ip_fin, ip_broadcast, nb_ips)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            """, (
+                                id_decoupe,
+                                ip_reseau_sr,
+                                masque,
+                                ip_debut,
+                                ip_fin,
+                                ip_broadcast,
+                                int(nb_ips)
+                            ))
 
     configurer_fenetre(app)
     frame = creer_frame_principale(app)

@@ -5,6 +5,8 @@ import recherche_decoupe
 import interface_verification_vlsm
 import interface_verifier_classe
 
+import calcul_reseau
+
 
 def afficher_menu(app, cadre_principal):
 
@@ -30,13 +32,12 @@ def afficher_menu(app, cadre_principal):
 
 
     boutons = [
-        ("1 Calcul adresse réseau / broadcast", lambda: print("Ouverture fonction 1")),
-        ("2 Vérifier appartenance IP", lambda: print("Ouverture fonction 2")),
-        ("3 Vérifier découpe classique possible", lambda: interface_verif_decoupe_classique.ouvrir_fenetre()),
-        ("4 Réaliser découpe classique (plan d’adressage)", lambda: Test.ouvrir_fenetre_decoupe() ),
-        ("5 Vérifier découpe VLSM possible", lambda: interface_verification_vlsm.ouvrir_fenetre_verification_vlsm()),
-        ("6 Vérifier la classe", lambda: interface_verifier_classe.ouvrir_fenetre()),
-        ("7 Rechercher une découpe", lambda: recherche_decoupe.ouvrir_fenetre_recherche_decoupe() ),
+        ("1 Calcul adresse réseau / appartenance", lambda: calcul_reseau.lancer_application()),
+        ("2 Vérifier découpe classique possible", lambda: interface_verif_decoupe_classique.ouvrir_fenetre()),
+        ("3 Réaliser découpe classique (plan d’adressage)", lambda: Test.ouvrir_fenetre_decoupe() ),
+        ("4 Vérifier découpe VLSM possible", lambda: interface_verification_vlsm.ouvrir_fenetre_verification_vlsm()),
+        ("5 Vérifier la classe", lambda: interface_verifier_classe.ouvrir_fenetre()),
+        ("6 Rechercher une découpe", lambda: recherche_decoupe.ouvrir_fenetre_recherche_decoupe() ),
     ]
 
     for texte, commande in boutons:
