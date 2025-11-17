@@ -386,6 +386,10 @@ def ouvrir_fenetre_decoupe():
                 nb_ips_utilisables=nb_ip
             )
 
+            if net.is_private:
+                messagebox.showerror("Erreur", "Les adresses IP privées ne sont pas autorisées", parent=app)
+                return
+
             # Bandeau info
             info = ctk.CTkLabel(
                 table_container,
