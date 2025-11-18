@@ -72,9 +72,7 @@ def build_tab1(tab):
     # --- Sélecteur de mode ---
     mode_frame, mode1_var = _creer_selecteur_mode(frame)
     # --- MODIFICATION ERGONOMIE ---
-    # Déplacé sous les entrées (row 3)
     mode_frame.grid(row=3, column=0, columnspan=2, sticky="w", padx=20, pady=10)
-    # --- Fin Modif ---
 
 
     # --- Boîte de résultat ---
@@ -83,9 +81,7 @@ def build_tab1(tab):
         fg_color=THEME_GREY_WIDGET, state="disabled", height=250
     )
     # --- MODIFICATION ERGONOMIE ---
-    # Déplacé à la ligne 5
     res1.grid(row=5, column=0, columnspan=2, sticky="ew", pady=15, padx=5)
-    # --- Fin Modif ---
 
     # --- Fonction de rappel (imbriquée) ---
     def _do_calc1():
@@ -241,8 +237,6 @@ def build_tab2(tab):
 
     # Appel initial pour régler l'état au démarrage
     _update_mask_for_mode()
-
-    # --- FIN MODIFICATION ---
 
     # --- Fonction de rappel (imbriquée) ---
     def _do_calc2():
