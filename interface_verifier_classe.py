@@ -56,11 +56,8 @@ def ouvrir_fenetre():
                 if cidr:
                     ip_complet = f"{ip}/{cidr}"
                 elif masque:
-                    if re.match(r"^(0|255)\.(0|255)\.(0|255)\.(0|255)$", masque):
-                        ip_complet = f"{ip}/{masque}"
-                    else:
-                        messagebox.showerror("Erreur", "Masque invalide", parent=app)
-                        ajouter_test_historique("Vérification IP", ip, "Masque invalide", False, user_id)
+
+                    ip_complet = f"{ip}/{masque}"
                 else:
                     messagebox.showerror("Erreur", "Veuillez entrer un CIDR ou un masque", parent=app)
                     ajouter_test_historique("Vérification IP", ip, "CIDR ou masque manquant", False, user_id)

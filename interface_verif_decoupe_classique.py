@@ -180,18 +180,7 @@ def ouvrir_fenetre():
             reseau = IPv4Network(f"{ip}/{cidr}", strict=False)
         elif masque:
             try:
-                if re.match(r"^(0|255)\.(0|255)\.(0|255)\.(0|255)$", masque):
-                    reseau = IPv4Network(f"{ip}/{masque}", strict=False)
-                else:
-                    messagebox.showerror("Erreur", "Le masque entré n'est pas valide", parent=app)
-                    ajouter_test_historique(
-                        "Vérification pour une découpe classique",
-                        f"Ip : {ip}, CIDR : {cidr}, Masque : {masque}, choix : {"Sous-Réseaux" if choix == "sr" else "Nombre d'hôte"}, Valeur : {valeur}",
-                        "Le masque entré n'est pas valide",
-                        False,
-                        user_id
-                    )
-                    return
+                reseau = IPv4Network(f"{ip}/{masque}", strict=False)
             except ValueError:
                 messagebox.showerror("Erreur", "Le masque n'est pas possible", parent=app)
                 ajouter_test_historique(

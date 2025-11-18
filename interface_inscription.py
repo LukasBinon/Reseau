@@ -1,3 +1,5 @@
+import re
+
 import customtkinter as ctk
 from database import ajouter_utilisateur
 
@@ -97,14 +99,42 @@ def afficher_page_inscription(app, cadre_principal, afficher_page_connexion):
     )
     bouton_retour.pack(pady=10)
 
-def verifier_inscription(utilisateur, mot_de_passe, confirmation, label_message, app, cadre_principal, afficher_page_connexion):
+
+def verifier_inscription(utilisateur, mot_de_passe, confirmation, label_message, app, cadre_principal,
+                         afficher_page_connexion):
+    # 1. Vérifier si les champs sont vides
     if not utilisateur or not mot_de_passe or not confirmation:
         label_message.configure(text="Veuillez remplir tous les champs.", text_color="red")
-    elif mot_de_passe != confirmation:
+        return
+
+    # 2. Vérifier si les mots de passe correspondent
+    if mot_de_passe != confirmation:
         label_message.configure(text="Les mots de passe ne correspondent pas.", text_color="red")
+        return
+
+    # --- NOUVEAU : Vérification de la complexité ---
+
+    # Vérifie s'il y a au moins une Majuscule [A-Z]
+    if not re.search(r"[A-Z]", mot_de_passe):
+        label_message.configure(text="Le mot de passe doit contenir au moins une majuscule.", text_color="red")
+        return
+
+    # Vérifie s'il y a au moins une Minuscule [a-z]
+    if not re.search(r"[a-z]", mot_de_passe):
+        label_message.configure(text="Le mot de passe doit contenir au moins une minuscule.", text_color="red")
+        return
+
+    # Vérifie s'il y a au moins un Caractère Spécial (liste définie entre crochets)
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", mot_de_passe):
+        label_message.configure(text="Le mot de passe doit contenir au moins un caractère spécial.", text_color="red")
+        return
+
+    # -----------------------------------------------
+
+    # 3. Tentative de création dans la base de données
+    if ajouter_utilisateur(utilisateur, mot_de_passe):
+        label_message.configure(text="Compte créé avec succès ", text_color="green")
+        # Note: Assure-toi que 'afficher_page_inscription' est bien accessible ici, sinon retire le dernier argument
+        label_message.after(1000, lambda: afficher_page_connexion(app, cadre_principal, afficher_page_inscription))
     else:
-        if ajouter_utilisateur(utilisateur, mot_de_passe):
-            label_message.configure(text="Compte créé avec succès ", text_color="green")
-            label_message.after(1000, lambda: afficher_page_connexion(app, cadre_principal, afficher_page_inscription))
-        else:
-            label_message.configure(text="Nom d’utilisateur déjà existant ", text_color="red")
+        label_message.configure(text="Nom d’utilisateur déjà existant ", text_color="red")
