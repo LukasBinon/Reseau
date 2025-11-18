@@ -421,7 +421,7 @@ def lancer_application():
 
     btn_fermer = ctk.CTkButton(
         top_frame,
-        text="Fermer l'application",
+        text="Fermer",
         command=app.destroy,
         fg_color=THEME_GREY_WIDGET,  # Style gris
         hover_color=THEME_GREY_HOVER, #
